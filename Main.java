@@ -8,7 +8,6 @@ public class Main extends JPanel {
     {1, 0, 0, 0, 1},
     {1, 1, 1, 1, 1}
   };
-
   int tileSize = 100;
 
   @Override
