@@ -68,51 +68,52 @@ public class Main extends JPanel implements KeyListener {
         if (map[y][x] == 1) {
           g.setColor(Color.WHITE);
           g.fillRect(
-            x * tileSize,
-            y * tileSize,
-            tileSize,
-            tileSize
-          );
-          // Draws player
-          g.setColor(Color.RED);
-          g.fillOval(
-            (int)(playerX * tileSize - 10),
-            (int)(playerY * tileSize - 10),
-            20,
-            20
-          );
-          g.setColor(Color.YELLOW);
-          int playerScreenX = (int)(playerX * tileSize);
-          int playerScreenY = (int)(playerY * tileSize);
-          int dirLineLength = 30;
-          int directX = (int)(Math.cos(playerAngle) * dirLineLength);
-          int directY = (int)(Math.sin(playerAngle) * dirLineLength);
-          g.drawLine(
-            playerScreenX,
-            playerScreenY,
-            playerScreenX + directX,
-            playerScreenY + directY
-          );
-          double rayAngle = playerAngle;
-          double rayX = Math.cos(rayAngle);
-          double rayY = Math.sin(rayAngle);
-          double rayDistance = 0.0;
-          double rayStep = 0.01;
-          double rayPosX = playerX;
-          double rayPosY = playerY;
-          while(!isWall(rayPosX, rayPosY)) {
-            rayPosX += rayX * rayStep;
-            rayPosY += rayY * rayStep;
-            rayDistance += rayStep;
-          }
-          g.setColor(Color.YELLOW);
-          g.drawLine(
-            (int)(playerX * tileSize),
-            (int)(playerY * tileSize),
-            (int)(playerX * tileSize),
-            (int)(playerY * tileSize)
+            x * tileSize + 1,
+            y * tileSize + 1,
+            tileSize - 1,
+            tileSize - 1
           );
         }
+        // Draws player
+        g.setColor(Color.RED);
+        g.fillOval(
+          (int)(playerX * tileSize - 10),
+          (int)(playerY * tileSize - 10),
+          20,
+          20
+        );
+        g.setColor(Color.YELLOW);
+        int playerScreenX = (int)(playerX * tileSize);
+        int playerScreenY = (int)(playerY * tileSize);
+        int dirLineLength = 30;
+        int directX = (int)(Math.cos(playerAngle) * dirLineLength);
+        int directY = (int)(Math.sin(playerAngle) * dirLineLength);
+        g.drawLine(
+          playerScreenX,
+          playerScreenY,
+          playerScreenX + directX,
+          playerScreenY + directY
+        );
+      
+        double rayAngle = playerAngle;
+        double rayX = Math.cos(rayAngle);
+        double rayY = Math.sin(rayAngle);
+        double rayDistance = 0.0;
+        double rayStep = 0.01;
+        double rayPosX = playerX;
+        double rayPosY = playerY;
+        while(!isWall(rayPosX, rayPosY)) {
+          rayPosX += rayX * rayStep;
+          rayPosY += rayY * rayStep;
+          rayDistance += rayStep;
+        }
+        g.setColor(Color.YELLOW);
+        g.drawLine(
+          (int)(playerX * tileSize),
+          (int)(playerY * tileSize),
+          (int)(playerX * tileSize),
+          (int)(playerY * tileSize)
+        );
       }
     }
   }
@@ -155,7 +156,7 @@ public class Main extends JPanel implements KeyListener {
   //updates the player position when keys pressed
   void update() {
     double speed = 0.05;
-    double rotationSpeed = 0.03;
+    double rotationSpeed = 0.1;
     
     if (left) {
       playerAngle -= rotationSpeed;
