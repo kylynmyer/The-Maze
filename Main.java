@@ -21,7 +21,7 @@ public class Main extends JPanel implements KeyListener {
 // Player direction vector
   double dirX = 1.0;
   double dirY = 0.0;
-  double fov = 0.0;
+  double fov = Math.toRadians(60);
 // Camera plane (perpendicular to direction)
   double planeX = 0.0;
   double planeY = 0.66;
@@ -74,47 +74,70 @@ public class Main extends JPanel implements KeyListener {
             tileSize - 1
           );
         }
-        // Draws player
-        g.setColor(Color.RED);
-        g.fillOval(
-          (int)(playerX * tileSize - 10),
-          (int)(playerY * tileSize - 10),
-          20,
-          20
-        );
-        g.setColor(Color.YELLOW);
-        int playerScreenX = (int)(playerX * tileSize);
-        int playerScreenY = (int)(playerY * tileSize);
-        int dirLineLength = 30;
-        int directX = (int)(Math.cos(playerAngle) * dirLineLength);
-        int directY = (int)(Math.sin(playerAngle) * dirLineLength);
-        g.drawLine(
-          playerScreenX,
-          playerScreenY,
-          playerScreenX + directX,
-          playerScreenY + directY
-        );
+      }
+    }
+    // Draws player
+    g.setColor(Color.RED);
+    g.fillOval(
+      (int)(playerX * tileSize - 10),
+      (int)(playerY * tileSize - 10),
+      20,
+      20
+    );
+
+    // RAY
+    int rayCount = 80;
+
+    for(int i=0; i<rayCount; i++){
       
-        double rayAngle = playerAngle;
-        double rayX = Math.cos(rayAngle);
-        double rayY = Math.sin(rayAngle);
-        double rayDistance = 0.0;
-        double rayStep = 0.01;
-        double rayPosX = playerX;
-        double rayPosY = playerY;
-        while(!isWall(rayPosX, rayPosY)) {
+      // The angle of this ray
+      double rayAngle = playerAngle - fov / 2 + fov * i / (rayCount - 1);
+
+      // Direction the ray travels
+      double rayX = Math.cos(rayAngle);
+      double rayY = Math.sin(rayAngle);
+
+      // Start the ray at the player
+      double rayPosX = playerX;
+      double rayPosY = playerY;
+
+      // How far the ray has traveled
+      double rayDistance = 0;
+
+      // Size of each ray step
+      double rayStep = 0.02;
+
+      // Move the ray forward until it hits a wall
+      while (!isWall(rayPosX, rayPosY)) {
           rayPosX += rayX * rayStep;
           rayPosY += rayY * rayStep;
+
           rayDistance += rayStep;
-        }
-        g.setColor(Color.YELLOW);
-        g.drawLine(
+      }
+
+      double wallHeight = 300 / rayDistance;
+
+      int wallTop = 300 - (int)(wallHeight / 2);
+      int wallBottom = 300 + (int)(wallHeight / 2);
+
+      g.setColor(Color.GRAY);
+
+      g.fillRect(
+        400 + i * 5,
+        wallTop,
+        5,
+        (int)wallHeight
+      );
+
+      // Draw the ray
+      g.setColor(Color.YELLOW);
+
+      g.drawLine(
           (int)(playerX * tileSize),
           (int)(playerY * tileSize),
-          (int)(playerX * tileSize),
-          (int)(playerY * tileSize)
-        );
-      }
+          (int)(rayPosX * tileSize),
+          (int)(rayPosY * tileSize)
+      );
     }
   }
   // Checks if you pressed the key to move the player
@@ -157,31 +180,45 @@ public class Main extends JPanel implements KeyListener {
   void update() {
     double speed = 0.05;
     double rotationSpeed = 0.1;
-    
+
+    // Rotate the player
     if (left) {
       playerAngle -= rotationSpeed;
     }
+
     if (right) {
       playerAngle += rotationSpeed;
     }
-    double cosAngle = Math.cos(playerAngle) * speed;
-    double sinAngle = Math.sin(playerAngle) * speed;
+
+    // Calculate movement direction
+    double moveX = Math.cos(playerAngle) * speed;
+    double moveY = Math.sin(playerAngle) * speed;
+
     double newX = playerX;
     double newY = playerY;
+
+    // Move forward
     if (up) {
-      newX += cosAngle;
-      newY += sinAngle;
+      newX += moveX;
+      newY += moveY;
     }
+
+    // Move backward
     if (down) {
-      newX -= cosAngle;
-      newY -= sinAngle;
+      newX -= moveX;
+      newY -= moveY;
     }
-    // Check for collisions before updating player position
-    if (!isWall(newX, newY)) {
+
+    // Check X movement separately
+    if (!isWall(newX, playerY)) {
       playerX = newX;
+    }
+
+    // Check Y movement separately
+    if (!isWall(playerX, newY)) {
       playerY = newY;
     }
-  }
+}
   // Starts the game
   public void startGame() {
     while (true) {
@@ -199,7 +236,7 @@ public class Main extends JPanel implements KeyListener {
     JFrame window = new JFrame("2D Raycaster Map");
     Main game = new Main();
     window.setContentPane(game);
-    window.pack();
+    window.setSize(800, 600);
     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     window.setLocationRelativeTo(null);
     window.setVisible(true);
