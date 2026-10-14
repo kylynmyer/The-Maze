@@ -5,11 +5,11 @@ import java.awt.event.*;
 public class Main extends JPanel implements KeyListener {
   // Map representation (1 = wall, 0 = empty space)
   int[][] map = {
-    {1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 1},
-    {1, 0, 1, 0, 1},
-    {1, 0, 0, 0, 1},
-    {1, 1, 1, 1, 1}
+    {1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 0, 0, 1},
+    {1, 0, 1, 0, 0, 1},
+    {1, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1}
   };
   
   int tileSize = 100;
@@ -129,7 +129,7 @@ public class Main extends JPanel implements KeyListener {
       g.setColor(wallColor);
 
       g.fillRect(
-        500 + i * 5,
+        600 + i * 5,
         wallTop,
         5,
         (int)wallHeight
@@ -242,7 +242,7 @@ public class Main extends JPanel implements KeyListener {
     JFrame window = new JFrame("2D Raycaster Map");
     Main game = new Main();
     window.setContentPane(game);
-    window.setSize(800, 600);
+    window.setSize(1115, 600);
     window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     window.setLocationRelativeTo(null);
     window.setVisible(true);
