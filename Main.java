@@ -86,7 +86,7 @@ public class Main extends JPanel implements KeyListener {
     );
 
     // RAY
-    int rayCount = 80;
+    int rayCount = 100;
 
     for(int i=0; i<rayCount; i++){
       
@@ -120,7 +120,13 @@ public class Main extends JPanel implements KeyListener {
       int wallTop = 300 - (int)(wallHeight / 2);
       int wallBottom = 300 + (int)(wallHeight / 2);
 
-      g.setColor(Color.GRAY);
+      int brightness = (int)(255 / (1 + rayDistance * 0.3));
+
+      brightness = Math.max(0, Math.min(255, brightness));
+
+      Color wallColor = new Color(brightness, brightness, brightness);
+
+      g.setColor(wallColor);
 
       g.fillRect(
         500 + i * 5,
@@ -179,7 +185,7 @@ public class Main extends JPanel implements KeyListener {
   //updates the player position when keys pressed
   void update() {
     double speed = 0.05;
-    double rotationSpeed = 0.1;
+    double rotationSpeed = 0.05;
 
     // Rotate the player
     if (left) {
