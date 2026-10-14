@@ -123,7 +123,7 @@ public class Main extends JPanel implements KeyListener {
       g.setColor(Color.GRAY);
 
       g.fillRect(
-        400 + i * 5,
+        500 + i * 5,
         wallTop,
         5,
         (int)wallHeight
