@@ -18,6 +18,7 @@ public class Main extends JPanel implements KeyListener {
   double playerY = 1.5;
   double playerAngle = 0.0;
   double playerRad = 0.15;
+  double playerSize = 0.3;
 // Player direction vector
   double dirX = 1.0;
   double dirY = 0.0;
@@ -30,6 +31,12 @@ public class Main extends JPanel implements KeyListener {
   boolean down;
   boolean left;
   boolean right;
+  // Items
+  boolean dropped = true;
+  double itemX = 1.5;
+  double itemY = 2.5;
+  double itemZ = 0.0;
+  double itemSize = 0.5;
   // collision
   boolean isWall(double x, double y) {
     // Check the left side
@@ -85,8 +92,20 @@ public class Main extends JPanel implements KeyListener {
       20
     );
 
+    // Draws item
+    if (dropped) {
+      g.setColor(Color.GREEN);
+      g.fillOval(
+        (int)(itemX * tileSize - 10),
+        (int)(itemY * tileSize - 10),
+        10,
+        10
+      );
+    }
+
     // RAY
     int rayCount = 100;
+    double[] rayDistances = new double[rayCount];
 
     for(int i=0; i<rayCount; i++){
       
@@ -114,6 +133,7 @@ public class Main extends JPanel implements KeyListener {
 
           rayDistance += rayStep;
       }
+      wallDistances[i] = rayDistance;
 
       double wallHeight = 300 / rayDistance;
 
@@ -144,6 +164,55 @@ public class Main extends JPanel implements KeyListener {
           (int)(rayPosX * tileSize),
           (int)(rayPosY * tileSize)
       );
+    }
+    if(dropped){
+      // pos relative to player
+      double dx = itemX - playerX;
+      double dy = itemY - playerY;
+      //distance to item
+      double distance = Math.sqrt(dx * dx + dy * dy);
+      // angle to item
+      double angleToItem = Math.atan2(dy, dx);
+      double relativeAngle = angleToItem - playerAngle;
+      // normalize relative angle to [-pi, pi]
+      while (relativeAngle > Math.PI){
+        relativeAngle -= 2 * Math.PI;
+      }
+      while (relativeAngle < -Math.PI){
+        relativeAngle += 2 * Math.PI;
+      }
+      // check if item is in FOV
+      if (Math.abs(relativeAngle) < fov / 2 && distance > 0.1){
+        // converts the relative angle to screen position
+        int screenX = (int)(600 + (relativeAngle + fov / 2) / fov * 500);
+        // converts the distance to screen size
+        int screenSize = (int)(100 / distance);
+        screenSize = Math.max(4, Math.min(60, screenSize));
+        //bobbing effect
+        int bobbing = (int)(Math.sin(itemZ) * 8);
+        // centers the item on the screen
+        int screenY = 300 - screenSize / 2 + bobbing;
+        //draws the item on the screen
+        g.setColor(Color.GREEN);
+        g.fillOval(
+          screenX - screenSize / 4,
+          screenY,
+          screenSize / 2,
+          screenSize / 2
+        );
+        g.fillRect(
+          screenX,
+          screenY + screenSize / 4,
+          screenSize / 2,
+          Math.max(2, screenSize / 8)
+        );
+        g.fillRect(
+          screenX + screenSize / 3,
+          screenY + screenSize / 4,
+          Math.max(2, screenSize / 8),
+          screenSize / 3
+        );
+      }
     }
   }
   // Checks if you pressed the key to move the player
@@ -224,7 +293,13 @@ public class Main extends JPanel implements KeyListener {
     if (!isWall(playerX, newY)) {
       playerY = newY;
     }
-}
+    if(dropped){
+      itemZ += 0.08;
+    }
+    if(playerX > itemX - 0.15 && playerX < itemX + 0.15 && playerY > itemY - 0.15 && playerY < itemY + 0.15){
+        dropped = false;
+    }
+  }
   // Starts the game
   public void startGame() {
     while (true) {
