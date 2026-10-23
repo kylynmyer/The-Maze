@@ -5,11 +5,16 @@ import java.awt.event.*;
 public class Main extends JPanel implements KeyListener {
   // Map representation (1 = wall, 0 = empty space)
   int[][] map = {
-    {1, 1, 1, 1, 1, 1},
-    {1, 0, 0, 0, 0, 1},
-    {1, 0, 1, 0, 0, 1},
-    {1, 0, 0, 0, 0, 1},
-    {1, 1, 1, 1, 1, 1}
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1},
+    {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1},
+    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+
   };
   
   int tileSize = 100;
@@ -262,7 +267,7 @@ public class Main extends JPanel implements KeyListener {
   }
   //updates the player position when keys pressed
   void update() {
-    double speed = 0.05;
+    double speed = 0.03;
     double rotationSpeed = 0.05;
 
     // Rotate the player
@@ -306,7 +311,10 @@ public class Main extends JPanel implements KeyListener {
       itemZ += 0.08;
     }
     if(playerX > itemX - 0.15 && playerX < itemX + 0.15 && playerY > itemY - 0.15 && playerY < itemY + 0.15){
-        dropped = false;
+      dropped = false;
+    }
+    if(!dropped){
+      map[1][5] = 0;
     }
   }
   // Starts the game
