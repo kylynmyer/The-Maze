@@ -105,7 +105,7 @@ public class Main extends JPanel implements KeyListener {
 
     // RAY
     int rayCount = 100;
-    double[] rayDistances = new double[rayCount];
+    double[] wallDistances = new double[rayCount];
 
     for(int i=0; i<rayCount; i++){
       
@@ -183,35 +183,44 @@ public class Main extends JPanel implements KeyListener {
       }
       // check if item is in FOV
       if (Math.abs(relativeAngle) < fov / 2 && distance > 0.1){
-        // converts the relative angle to screen position
-        int screenX = (int)(600 + (relativeAngle + fov / 2) / fov * 500);
-        // converts the distance to screen size
-        int screenSize = (int)(100 / distance);
-        screenSize = Math.max(4, Math.min(60, screenSize));
-        //bobbing effect
-        int bobbing = (int)(Math.sin(itemZ) * 8);
-        // centers the item on the screen
-        int screenY = 300 - screenSize / 2 + bobbing;
-        //draws the item on the screen
-        g.setColor(Color.GREEN);
-        g.fillOval(
-          screenX - screenSize / 4,
-          screenY,
-          screenSize / 2,
-          screenSize / 2
-        );
-        g.fillRect(
-          screenX,
-          screenY + screenSize / 4,
-          screenSize / 2,
-          Math.max(2, screenSize / 8)
-        );
-        g.fillRect(
-          screenX + screenSize / 3,
-          screenY + screenSize / 4,
-          Math.max(2, screenSize / 8),
-          screenSize / 3
-        );
+        //which wall ray lines up with the item
+        int rayIndex = (int)((relativeAngle + fov / 2) / fov * rayCount);
+        rayIndex = Math.max(0, Math.min(rayCount - 1, rayIndex));
+        //only draw if the wall is farther away than the key
+        if(distance < wallDistances[rayIndex]){
+          // converts the relative angle to screen position
+          int screenX = (int)(600 + (relativeAngle + fov / 2) / fov * 500);
+          // converts the distance to screen size
+          int screenSize = (int)(100 / distance);
+          screenSize = Math.max(4, Math.min(60, screenSize));
+          //bobbing effect
+          int bobbing = (int)(Math.sin(itemZ) * 8);
+          // centers the item on the screen
+          int screenY = 300 - screenSize / 2 + bobbing;
+          //Shading based on distance
+          int brightness = (int)(255 / (1 + distance * 0.3));
+          brightness = Math.max(0, Math.min(255, brightness));
+          //draws the item on the screen
+          g.setColor(new Color(0, brightness, 0));
+          g.fillOval(
+            screenX - screenSize / 4,
+            screenY,
+            screenSize / 2,
+            screenSize / 2
+          );
+          g.fillRect(
+            screenX,
+            screenY + screenSize / 4,
+            screenSize / 2,
+            Math.max(2, screenSize / 8)
+          );
+          g.fillRect(
+            screenX + screenSize / 3,
+            screenY + screenSize / 4,
+            Math.max(2, screenSize / 8),
+            screenSize / 3
+          );
+        }
       }
     }
   }
