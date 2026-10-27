@@ -10,14 +10,16 @@ public class Main extends JPanel implements KeyListener {
     {1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1},
     {1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1},
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1},
-    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1},
-    {1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
+    {1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1},
     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
   };
   
-  int tileSize = 100;
+  int tileSize = 30;
+  double deathDim = 1.0;
+  boolean deathCountDown = false;
 // Player position
   double playerX = 2.0;
   double playerY = 1.5;
@@ -42,6 +44,7 @@ public class Main extends JPanel implements KeyListener {
   double itemY = 2.5;
   double itemZ = 0.0;
   double itemSize = 0.5;
+  int keyCount = 0;
   // collision
   boolean isWall(double x, double y) {
     // Check the left side
@@ -147,7 +150,7 @@ public class Main extends JPanel implements KeyListener {
 
       int brightness = (int)(255 / (1 + rayDistance * 0.3));
 
-      brightness = Math.max(0, Math.min(255, brightness));
+      brightness = Math.max(0, Math.min(255 , brightness));
 
       Color wallColor = new Color(brightness, brightness, brightness);
 
@@ -227,6 +230,13 @@ public class Main extends JPanel implements KeyListener {
           );
         }
       }
+    }
+    if(deathDim < 1.0){
+      Graphics2D g2 = (Graphics2D) g.create();
+      int alpha = (int)(255 * (1.0 - deathDim));
+      g2.setColor(new Color(0, 0, 0, alpha));
+      g2.fillRect(0, 0, getWidth(), getHeight());
+      g2.dispose();
     }
   }
   // Checks if you pressed the key to move the player
@@ -313,8 +323,28 @@ public class Main extends JPanel implements KeyListener {
     if(playerX > itemX - 0.15 && playerX < itemX + 0.15 && playerY > itemY - 0.15 && playerY < itemY + 0.15){
       dropped = false;
     }
-    if(!dropped){
+    if(!dropped && keyCount == 0){
       map[1][5] = 0;
+      itemX = 6.5;
+      itemY = 3.5;
+      dropped = true;
+      keyCount++;
+    }else if(keyCount == 1 && !dropped){
+      map[4][8] = 0;
+      itemX = 10.5;
+      itemY = 7.5;
+      dropped = true;
+      keyCount++;
+      deathCountDown = true;
+    }else if(keyCount == 2 && !dropped){
+      map[6][6] = 0;
+      dropped = true;
+      keyCount = 0;
+      deathCountDown = false;
+      deathDim = 1.0;
+    }
+    if(deathCountDown && deathDim > 0.0){
+      deathDim = Math.max(0.0, deathDim - 0.001);
     }
   }
   // Starts the game
