@@ -18,8 +18,21 @@ public class Main extends JPanel implements KeyListener {
   };
   
   int tileSize = 30;
+  // Death mechanics
   double deathDim = 1.0;
   boolean deathCountDown = false;
+  String deathTimer = "Death incoming: " + "5s";
+  // Task description
+  String stepCount = "(Step " + tutorialStep + "/" + totalTutorialSteps + ")";
+  String taskDescription = "Task: Finish the tutorial";
+  String taskHint = "Press 'A' and 'D' to look left and right " + stepCount;
+  String taskHint2 = "Press 'W' and 'S' to move forward and backward " + stepCount;
+  String taskHint3 = "Find the key to complete the tutorial " + stepCount;
+  String taskHint2 = "Press 'W' and 'S' to move forward and backward";
+  String taskHint3 = "Find the key to complete the tutorial";
+  boolean tutorialCompleted = false;
+  int tutorialStep = 0;
+  int totalTutorialSteps = 0;
 // Player position
   double playerX = 2.0;
   double playerY = 1.5;
@@ -173,6 +186,12 @@ public class Main extends JPanel implements KeyListener {
           (int)(rayPosY * tileSize)
       );
     }
+    g.setColor(Color.WHITE);
+    g.setFont(new Font("Arial", Font.BOLD, 20));
+    g.drawString(taskDescription, 20, 30);
+    g.drawString(taskHint, 20, 60);
+    g.drawString("Press 'W' and 'S' to move forward and backward", 20, 90);
+    g.drawString("Find the key", 20, 120);
     if(dropped){
       // pos relative to player
       double dx = itemX - playerX;
@@ -345,6 +364,18 @@ public class Main extends JPanel implements KeyListener {
     }
     if(deathCountDown && deathDim > 0.0){
       deathDim = Math.max(0.0, deathDim - 0.001);
+    }
+    if(keyCount == 0){
+      totalTutorialSteps = 2;
+      if(tutorialStep == 2){
+        tutorialCompleted = true;
+      }
+        if(left){
+          tutorialStep++;
+        }else if(right){
+          tutorialStep++;
+        }
+        
     }
   }
   // Starts the game
