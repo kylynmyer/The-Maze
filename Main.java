@@ -25,6 +25,9 @@ public class Main extends JPanel implements KeyListener {
   // Task description
   boolean leftPressed = false;
   boolean rightPressed = false;
+  boolean upPressed = false;
+  boolean downPressed = false;
+  int tasknum = 0;
   int tutorialStep = 0;
   int totalTutorialSteps = 2;
   String stepCount = "(Step " + tutorialStep + "/" + totalTutorialSteps + ")";
