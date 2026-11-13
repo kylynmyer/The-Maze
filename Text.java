@@ -68,4 +68,27 @@ public class Text {
         g.drawString(text, x, y);
         g.drawString(getStepCount(), x, y + 20);
     }
+    public void drawTaskDescription(Graphics g, int x, int y) {
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.PLAIN, 16));
+        g.drawString(taskDescription, x, y);
+    }
+    public void drawObjective(Graphics g, int x, int y) {
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Arial", Font.PLAIN, 16));
+        g.drawString(objective, x, y);
+    }
+    public void textFadeOut(boolean f, Graphics g) {
+        double dim = 1.0;
+        if(dim < 1.0){
+            Graphics2D g2 = (Graphics2D) g.create();
+            int alpha = (int)(255 * (1.0 - dim));
+            g2.setColor(new Color(0, 0, 0, alpha));
+            g2.fillRect(0, 0, getWidth(), getHeight());
+            g2.dispose();
+        }
+        if(f && dim > 0.0){
+            dim = Math.max(0.0, dim - 0.1);
+        }
+    }
 }
