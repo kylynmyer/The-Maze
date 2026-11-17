@@ -7,6 +7,8 @@ public class Text {
     private static int totalTutorialSteps = 2;
     private String taskDescription;
     private String objective;
+    private double dim = 1.0;
+    private int fadeSpeed = 5;
 
     public void setText(String text) {
         this.text = text;
@@ -63,32 +65,42 @@ public class Text {
         this.objective = objective;
     }
     public void draw(Graphics g, int x, int y) {
-        g.setColor(Color.WHITE);
+        g.setColor(new Color(255, 255, 255, (int)(255 * dim)));
         g.setFont(new Font("Arial", Font.PLAIN, 16));
+
         g.drawString(text, x, y);
         g.drawString(getStepCount(), x, y + 20);
     }
     public void drawTaskDescription(Graphics g, int x, int y) {
-        g.setColor(Color.WHITE);
+        g.setColor(new Color(255, 255, 255, (int)(255 * dim)));
         g.setFont(new Font("Arial", Font.PLAIN, 16));
-        g.drawString(taskDescription, x, y);
+
+        g.drawString(text, x, y);
+        g.drawString(getStepCount(), x, y + 20);
     }
     public void drawObjective(Graphics g, int x, int y) {
-        g.setColor(Color.WHITE);
+        g.setColor(new Color(255, 255, 255, (int)(255 * dim)));
         g.setFont(new Font("Arial", Font.PLAIN, 16));
-        g.drawString(objective, x, y);
+
+        g.drawString(text, x, y);
+        g.drawString(getStepCount(), x, y + 20);
     }
-    public void textFadeOut(boolean f, Graphics g) {
-        double dim = 1.0;
-        if(dim < 1.0){
-            Graphics2D g2 = (Graphics2D) g.create();
-            int alpha = (int)(255 * (1.0 - dim));
-            g2.setColor(new Color(0, 0, 0, alpha));
-            g2.fillRect(0, 0, getWidth(), getHeight());
-            g2.dispose();
+    public void textFadeOut() {
+        if (dim > 0.0) {
+            dim = Math.max(0.0, dim - 0.02);
         }
-        if(f && dim > 0.0){
-            dim = Math.max(0.0, dim - 0.1);
+    }
+    public void textFadeIn(boolean f) {
+        if (f && dim < 1.0) {
+            dim = Math.min(1.0, dim + 0.02);
+        }
+    }
+    public void resetFade() {
+        dim = 0.0;
+    }
+    public void updateFade(boolean fadeStarted) {
+        if (fadeStarted && dim > 0.0) {
+            dim = Math.max(0.0, dim - 0.02);
         }
     }
 }

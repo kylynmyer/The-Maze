@@ -36,6 +36,8 @@ public class Main extends JPanel implements KeyListener {
   String taskHint2 = "Press 'W' and 'S' to move forward and backward " + stepCount;
   String taskHint3 = "Find the key to complete the tutorial " + stepCount;
   boolean tutorialCompleted = false;
+  Text t = new Text();
+  boolean fadeStarted = false;
   
 // Player position
   double playerX = 2.0;
@@ -190,10 +192,7 @@ public class Main extends JPanel implements KeyListener {
           (int)(rayPosY * tileSize)
       );*/
     }
-    g.setColor(Color.WHITE);
-    g.setFont(new Font("Arial", Font.BOLD, 20));
-    g.drawString(taskDescription, 20, 30);
-    g.drawString(taskHint, 20, 60);
+    t.textFadeOut(g, getWidth(), getHeight());
     if(dropped){
       // pos relative to player
       double dx = itemX - playerX;
@@ -367,26 +366,7 @@ public class Main extends JPanel implements KeyListener {
     if(deathCountDown && deathDim > 0.0){
       deathDim = Math.max(0.0, deathDim - 0.001);
     }
-    if(keyCount == 0){
-      totalTutorialSteps = 2;
-      if(tutorialStep == 2){
-        tutorialCompleted = true;
-        leftPressed = false;
-        rightPressed = false;
-      }else{
-        if(left && !leftPressed){
-          tutorialStep++;
-          leftPressed = true;
-        }else if(right && !rightPressed){
-          tutorialStep++;
-          rightPressed = true;
-        }
-      }
-      String taskHint = "Press 'A' and 'D' to look left and right " + stepCount;
-      String stepCount = "(Step " + tutorialStep + "/" + totalTutorialSteps + ")";
-      String taskHint2 = "Press 'W' and 'S' to move forward and backward " + stepCount;
-      String taskHint3 = "Find the key to complete the tutorial " + stepCount;
-    }
+    t.updateFade(fadeStarted);
     
   }
   // Starts the game
