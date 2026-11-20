@@ -192,7 +192,7 @@ public class Main extends JPanel implements KeyListener {
           (int)(rayPosY * tileSize)
       );*/
     }
-    t.textFadeOut(g, getWidth(), getHeight());
+    t.updateFade(true);
     if(dropped){
       // pos relative to player
       double dx = itemX - playerX;
@@ -366,7 +366,7 @@ public class Main extends JPanel implements KeyListener {
     if(deathCountDown && deathDim > 0.0){
       deathDim = Math.max(0.0, deathDim - 0.001);
     }
-    t.updateFade(fadeStarted);
+    t.updateFade(true);
     
   }
   // Starts the game
